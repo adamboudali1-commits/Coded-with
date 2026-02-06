@@ -15,7 +15,10 @@ export default function UrlForm({ theme }) {
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
 
-  const apiBase = (import.meta.env.VITE_API_BASE_URL || "/api").replace(/\/$/, "");
+  const apiBase = (
+    import.meta.env.VITE_API_BASE_URL ||
+    (import.meta.env.DEV ? "http://localhost:5000" : "/api")
+  ).replace(/\/$/, "");
 
   const isDark = theme === 'dark';
 
@@ -50,10 +53,15 @@ export default function UrlForm({ theme }) {
         body: JSON.stringify({ url }),
       });
 
-      const data = await response.json();
+      const isJson = response.headers.get("content-type")?.includes("application/json");
+      const data = isJson ? await response.json() : null;
 
       if (!response.ok) {
-        throw new Error(data.error || "Error during analysis");
+        throw new Error(data?.error || "Error during analysis");
+      }
+
+      if (!data) {
+        throw new Error("Empty response from server");
       }
 
       // Handle both array (new format) and grouped object (old format)

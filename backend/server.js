@@ -387,18 +387,20 @@ process.on('uncaughtException', (error) => {
 });
 
 /**
- * Start server
+ * Start server (standalone only)
  */
-app.listen(PORT, async () => {
-  console.log(`\n🚀 Tech Stack Analyzer Server`);
-  console.log(`📍 Listening on http://localhost:${PORT}`);
-  console.log(`📝 POST /analyze - Analyze a website's technology stack`);
-  console.log(`🏥 GET /health - Health check\n`);
+if (require.main === module) {
+  app.listen(PORT, async () => {
+    console.log(`\n🚀 Tech Stack Analyzer Server`);
+    console.log(`📍 Listening on http://localhost:${PORT}`);
+    console.log(`📝 POST /analyze - Analyze a website's technology stack`);
+    console.log(`🏥 GET /health - Health check\n`);
 
-  // Pre-initialize browser on startup
-  await initBrowser();
-  console.log("✅ Puppeteer browser initialized\n");
-});
+    // Pre-initialize browser on startup
+    await initBrowser();
+    console.log("✅ Puppeteer browser initialized\n");
+  });
+}
 
 /**
  * Graceful shutdown
