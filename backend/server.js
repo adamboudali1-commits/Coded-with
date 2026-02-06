@@ -4,6 +4,7 @@
 
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const isVercel = Boolean(process.env.VERCEL);
 const puppeteer = isVercel ? require("puppeteer-core") : require("puppeteer");
 const chromium = isVercel ? require("@sparticuz/chromium") : null;
@@ -51,10 +52,21 @@ let browser = null;
 async function initBrowser() {
   if (!browser) {
     if (isVercel) {
+      const executablePath = await chromium.executablePath();
+      if (executablePath) {
+        const executableDir = path.dirname(executablePath);
+        const libPath = path.join(executableDir, "lib");
+        process.env.LD_LIBRARY_PATH = [
+          process.env.LD_LIBRARY_PATH,
+          executableDir,
+          libPath,
+        ].filter(Boolean).join(":");
+      }
+
       browser = await puppeteer.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
+        executablePath,
         headless: chromium.headless,
       });
     } else {
