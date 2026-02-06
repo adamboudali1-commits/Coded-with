@@ -63,11 +63,15 @@ async function initBrowser() {
         ].filter(Boolean).join(":");
       }
 
+      chromium.setGraphicsMode = false;
+      const headlessMode = "shell";
+      const launchArgs = puppeteer.defaultArgs({ args: chromium.args, headless: headlessMode });
+
       browser = await puppeteer.launch({
-        args: chromium.args,
+        args: launchArgs,
         defaultViewport: chromium.defaultViewport,
         executablePath,
-        headless: chromium.headless,
+        headless: headlessMode,
       });
     } else {
       browser = await puppeteer.launch({

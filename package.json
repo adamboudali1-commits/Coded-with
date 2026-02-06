@@ -2,7 +2,7 @@
   "name": "coded-with",
   "private": true,
   "dependencies": {
-    "@sparticuz/chromium": "^123.0.0",
+    "@sparticuz/chromium": "^143.0.4",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "puppeteer-core": "^24.36.0"
