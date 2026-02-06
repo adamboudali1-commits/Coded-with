@@ -58,6 +58,13 @@ npm run dev
 
 The frontend will start on **http://localhost:5173**
 
+Create a local env file so the frontend can reach the backend:
+
+```bash
+cd frontend
+echo VITE_API_BASE_URL=http://localhost:5000 > .env.local
+```
+
 ## Project Structure
 
 ```
@@ -105,6 +112,8 @@ Content-Type: application/json
   "url": "https://example.com"
 }
 ```
+
+In production on Vercel, the frontend calls the serverless endpoint at **/api/analyze** (same origin).
 
 **Success Response (200):**
 ```json

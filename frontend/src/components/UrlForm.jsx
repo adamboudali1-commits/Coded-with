@@ -15,6 +15,8 @@ export default function UrlForm({ theme }) {
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
 
+  const apiBase = (import.meta.env.VITE_API_BASE_URL || "/api").replace(/\/$/, "");
+
   const isDark = theme === 'dark';
 
   const isValidUrl = (urlString) => {
@@ -40,7 +42,7 @@ export default function UrlForm({ theme }) {
     setSearched(false);
 
     try {
-      const response = await fetch("http://localhost:5000/analyze", {
+      const response = await fetch(`${apiBase}/analyze`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
