@@ -4,7 +4,9 @@
 
 const express = require("express");
 const cors = require("cors");
-const puppeteer = require("puppeteer");
+const isVercel = Boolean(process.env.VERCEL);
+const puppeteer = isVercel ? require("puppeteer-core") : require("puppeteer");
+const chromium = isVercel ? require("@sparticuz/chromium") : null;
 const { analyzeTechnologies, CATEGORY_ORDER } = require("./analyzer");
 
 const app = express();
@@ -48,14 +50,23 @@ let browser = null;
  */
 async function initBrowser() {
   if (!browser) {
-    browser = await puppeteer.launch({
-      headless: "new",
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-      ],
-    });
+    if (isVercel) {
+      browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+      });
+    } else {
+      browser = await puppeteer.launch({
+        headless: "new",
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
+      });
+    }
   }
   return browser;
 }
